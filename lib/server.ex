@@ -12,7 +12,7 @@ defmodule Server do
   use Application
   import Supervisor.Spec
 
-
+  @system_ip "178.62.97.9"
   @maximun_clients_allowed 200
   @port Application.get_env(:server, :port)
 
@@ -105,8 +105,12 @@ defmodule Server do
 # --------------------- GET LOCAL IP -----------------------
 
   defp ip_address do
-    {:ok, [addr,hwaddr]} = :inet.ifget('en0',[:addr, :hwaddr])
+
+    # Find ip else list it
+    {:ok, [addr, _]} = :inet.ifget('en0',[:addr, :hwaddr])
     elem(addr,1) |> Tuple.to_list |> Enum.join(".")
+    # or
+    # @system_ip
   end
 
 

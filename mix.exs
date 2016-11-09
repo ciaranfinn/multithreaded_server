@@ -14,7 +14,7 @@ defmodule Server.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [ mod: {Server, []},
+    [ mod: { Server, [] },
       applications: [:logger]]
   end
 

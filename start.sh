@@ -1,4 +1,3 @@
-#!/bin/bash
 allowed_port='^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'
 
 main(){
@@ -10,6 +9,11 @@ main(){
       echo "error: not a valid port" >&2;
       exit 1
     else
+      # Create environment Variable
+      echo "Port OK ✓"
+      export DIST_SERVER_PORT=$1
+
+      # Run Elixir App
       mix run --no-halt
     fi
   fi

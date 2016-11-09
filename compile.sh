@@ -1,5 +1,3 @@
-#!/bin/bash
-
 darwin_install(){
   if hash elixir 2>/dev/null; then
     echo "You have elixir installed"
