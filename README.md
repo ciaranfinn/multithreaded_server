@@ -1,6 +1,6 @@
 # Server
 
-### Runnig:
+### Running:
 1.`./compile.sh`
 
 2.`./start.sh 8000`
