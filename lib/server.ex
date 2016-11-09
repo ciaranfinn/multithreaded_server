@@ -3,6 +3,7 @@
 # References:
 # https://thepugautomatic.com/2016/01/pattern-matching-complex-strings/
 # http://elixir-lang.org/getting-started/mix-otp/task-and-gen-tcp.html
+# http://elixir-lang.org/docs/stable/elixir/Supervisor.html#content
 # http://elixir-lang.org/docs/stable/elixir/Task.html
 # http://elixir-lang.org/getting-started/keywords-and-maps.html#maps
 
@@ -58,8 +59,8 @@ defmodule Server do
 
   # spawn new worker for every client connection
   defp handle_client(socket, client_socket) do
-    %{:workers => workers} = Supervisor.count_children(Server.TaskSupervisor)
-    if workers <= @maximun_clients_allowed do
+    %{:workers => count} = Supervisor.count_children(Server.TaskSupervisor)
+    if count <= @maximun_clients_allowed do
       case Task.Supervisor.start_child(Server.TaskSupervisor, fn -> process_resquest(socket,client_socket) end) do
         {:ok, pid} ->
               :gen_tcp.controlling_process(client_socket, pid)
@@ -87,13 +88,13 @@ defmodule Server do
     end
   end
 
-  defp action( _ ,socket, "HELO" <> " " <> text) do
+  defp action( _ ,socket, "HELO" <> " " <> text ) do
     payload = "HELO #{text}IP:#{ip_address}\nPort:#{@port}\nStudentID:13320900\n"
     :gen_tcp.send(socket,payload)
     :gen_tcp.close(socket)
   end
 
-  defp action( server_socket , _ , "KILL_SERVICE" <> _) do
+  defp action( server_socket , _ , "KILL_SERVICE" <> _ ) do
     :gen_tcp.close(server_socket)
   end
 
@@ -104,7 +105,8 @@ defmodule Server do
 # --------------------- GET LOCAL IP -----------------------
 
   defp ip_address do
-    12345
+    {:ok, [addr,hwaddr]} = :inet.ifget('en0',[:addr, :hwaddr])
+    elem(addr,1) |> Tuple.to_list |> Enum.join(".")
   end
 
 
