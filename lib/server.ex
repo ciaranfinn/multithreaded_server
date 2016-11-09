@@ -4,12 +4,15 @@
 # https://thepugautomatic.com/2016/01/pattern-matching-complex-strings/
 # http://elixir-lang.org/getting-started/mix-otp/task-and-gen-tcp.html
 # http://elixir-lang.org/docs/stable/elixir/Task.html
+# http://elixir-lang.org/getting-started/keywords-and-maps.html#maps
 
 defmodule Server do
 
   use Application
   import Supervisor.Spec
 
+
+  @maximun_clients_allowed 200
   @port Application.get_env(:server, :port)
 
 
@@ -55,13 +58,19 @@ defmodule Server do
 
   # spawn new worker for every client connection
   defp handle_client(socket, client_socket) do
-    case Task.Supervisor.start_child(Server.TaskSupervisor, fn -> process_resquest(socket,client_socket) end) do
-      {:ok, pid} ->
-            :gen_tcp.controlling_process(client_socket, pid)
-            socket |> receive_connection
-       _ ->
-        IO.puts "Error spawning new worker"
-        System.halt
+    %{:workers => workers} = Supervisor.count_children(Server.TaskSupervisor)
+    if workers <= @maximun_clients_allowed do
+      case Task.Supervisor.start_child(Server.TaskSupervisor, fn -> process_resquest(socket,client_socket) end) do
+        {:ok, pid} ->
+              :gen_tcp.controlling_process(client_socket, pid)
+              socket |> receive_connection
+         _ ->
+          IO.puts "Error spawning new worker"
+          System.halt
+      end
+    else
+      :gen_tcp.close(client_socket)
+      socket |> receive_connection
     end
   end
 
