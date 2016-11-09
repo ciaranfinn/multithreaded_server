@@ -20,7 +20,7 @@ defmodule Server do
   def start(_type, _args) do
     IO.puts "✓ Server Started"
     children = [
-      worker(Task, [Server, :begin_listening, [@port]]),
+      worker(Task, [Server, :begin_listening, [String.to_integer(@port)]]),
       supervisor(Task.Supervisor, [[name: Server.TaskSupervisor]])
     ]
     options = [strategy: :one_for_one, name: Server.Supervisor]
