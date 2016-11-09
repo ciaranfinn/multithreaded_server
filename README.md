@@ -1,24 +1,31 @@
 # Server
 
-**TODO: Add description**
+### Runnig:
+1.`./compile.sh`
 
-## Installation
+2.`./start.sh 8000`
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
 
-  1. Add `server` to your list of dependencies in `mix.exs`:
+### Max Connections:
+This is a fixed variable within the program which is set to <b>200.
 
-    ```elixir
-    def deps do
-      [{:server, "~> 0.1.0"}]
-    end
-    ```
 
-  2. Ensure `server` is started before your application:
+### Requests & Responses:
 
-    ```elixir
-    def application do
-      [applications: [:server]]
-    end
-    ```
+`"HELO text\n"`
+> <b>Response:<b>
+>
+	1. Respond with "HELO text\nIP:[ip address]
+	\nPort:[port number]\nStudentID:[your student ID]\n"
+	2. Close connection
 
+
+`"ANYTHING goes here\n"`
+> <b>Response:<b>
+>
+	No response
+
+`"KILL_SERVICE\n"`
+> Response:
+>
+	The server should shutdown.

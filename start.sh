@@ -9,11 +9,10 @@ main(){
       echo "error: not a valid port" >&2;
       exit 1
     else
-      # Create environment Variable
-      echo "Port OK ✓"
+      echo "Port number OK"
+      # Set environment variable with port number
       export DIST_SERVER_PORT=$1
-
-      # Run Elixir App
+      # Run elixir server
       mix run --no-halt
     fi
   fi
